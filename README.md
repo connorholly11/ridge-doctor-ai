@@ -8,8 +8,13 @@ A lightweight clinical decision-support tool for licensed clinicians. Provides e
 
 1. Clone this repository
 2. Copy `.env.example` to `.env` and add your OpenAI API key
-3. Install dependencies: `pip install -r requirements.txt`
-4. Run locally: `streamlit run app.py`
+3. Create and activate virtual environment:
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
+4. Install dependencies: `pip install -r requirements.txt`
+5. Run locally: `streamlit run app.py`
 
 ### Deploy to Streamlit Community Cloud
 
@@ -53,3 +58,6 @@ A lightweight clinical decision-support tool for licensed clinicians. Provides e
 ## Customization
 
 Edit `common_cases.json` to add your own template cases.
+
+### o3 Token Budget
+We reserve 3,500 completion tokens per call to guarantee an answer even after the model's internal reasoning overhead. If a blank answer slips through, the app retries once at 5,000 tokens.
