@@ -211,12 +211,28 @@ MAX_TOKENS_RETRY = 5000    # ultra-conservative fallback
 
 def call_o3(messages, max_tok):
     """Call o3 with specified token limit"""
-    return client.chat.completions.create(
-        model="o3",
-        max_completion_tokens=max_tok,
-        reasoning_effort="medium",  # medium effort for balanced accuracy/cost
-        messages=messages
-    )
+    # Log OpenAI library version
+    import openai
+    logger.info(f"OpenAI library version: {openai.__version__}")
+    
+    # Try with max_completion_tokens first, fall back to max_tokens if needed
+    try:
+        return client.chat.completions.create(
+            model="o3",
+            max_completion_tokens=max_tok,
+            reasoning_effort="medium",  # medium effort for balanced accuracy/cost
+            messages=messages
+        )
+    except TypeError as e:
+        if "max_completion_tokens" in str(e):
+            logger.warning("max_completion_tokens not supported, falling back to max_tokens")
+            return client.chat.completions.create(
+                model="o3",
+                max_tokens=max_tok,
+                messages=messages
+            )
+        else:
+            raise e
 
 def display_result(task_name, answer, col=None):
     """Display formatted result for a task"""
